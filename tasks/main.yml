@@ -4,12 +4,17 @@
   register: grub_file
   failed_when: False
 
-
-- name: update grub
+- name: update grub if ubuntu 12.04 or 14.04
   command: "sudo update-grub -y"
   environment:
     DEBIAN_FRONTEND: noninteractive
-  when: grub_file.rc != 0
+  when: grub_file.rc != 0 and os_release in [12.04, 14.04, '']
+
+- name: update grub if ubuntu 15.04
+  command: "sudo update-grub"
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  when: grub_file.rc != 0 and os_release == 15.04
 
 - name: update apt-packages
   apt: "upgrade=dist update_cache=yes"
